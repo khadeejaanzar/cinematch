@@ -1,5 +1,9 @@
 const dns = require("node:dns");
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+// Home networks sometimes fail MongoDB Atlas SRV lookups, so force public DNS
+// locally. On Render the platform resolver is required, so leave it alone there.
+if (!process.env.RENDER) {
+  dns.setServers(["1.1.1.1", "8.8.8.8"]);
+}
 
 require("dotenv").config();
 
