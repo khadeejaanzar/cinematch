@@ -2,7 +2,8 @@
    CineMatch — Complete Frontend Script
    ===================================================== */
 
-const API_BASE = "http://localhost:3000";
+// Empty means "same origin": the Express server also serves the frontend.
+const API_BASE = "";
 let movies = [];
 let authMode = "login";
 let editingMovieId = null;

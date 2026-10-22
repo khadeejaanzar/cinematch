@@ -3,6 +3,7 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 require("dotenv").config();
 
+const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -19,7 +20,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: "20kb" }));
 
-app.get("/", (req, res) => res.send("CineMatch backend is running!"));
+// The frontend is served by this same app in production, so only these
+// three files are exposed publicly (never server.js, models/, or .env).
+const PUBLIC_FILES = ["style.css", "script.js"];
+
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+for (const file of PUBLIC_FILES) {
+  app.get(`/${file}`, (req, res) => res.sendFile(path.join(__dirname, file)));
+}
+app.get("/healthz", (req, res) => res.json({ status: "ok" }));
 
 function createToken(user) {
   return jwt.sign(
